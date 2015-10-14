@@ -2,13 +2,14 @@
 
 Name:		snf-image
 Version:	0.18.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	snf-image is a Ganeti OS definition
 Vendor:         Synnefo development team
 
 License:	GPLv2
 URL:		https://github.com/grnet/snf-image
 Source0:	%{name}-%{version}.tar.gz
+Source1:	%{name}.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	make
@@ -21,6 +22,7 @@ Requires:       kpartx
 Requires:       mbr
 Requires:       python >= 2.6
 Requires:       curl
+Requires:       wget
 Requires:       scapy
 Requires:       python-prctl
 Requires:       xz
@@ -44,6 +46,7 @@ snf-image also supports Image customization via hooks. Hooks allow for:
 %setup -q
 
 %build
+patch -p 1 < %{SOURCE1}
 cd snf-image-host
 ./autogen.sh
 %configure \
@@ -77,5 +80,8 @@ ln -s /etc/ganeti/snf-image/variants.list /usr/share/ganeti/os/snf-image/variant
 %config /etc/default/snf-image
 
 %changelog
+* Wed Oct 14 2015 Gert Van Gool <gert@weepee.org> 0.18.1-2
+    Have snf-image-update-helper use wget instead of curl. The synnefo CDN has
+    issues with the CentOS 7 curl (and NSS).
 * Wed Oct 14 2015 Gert Van Gool <gert@weepee.org> 0.18.1-1
     Updates to snf-image 0.18.1

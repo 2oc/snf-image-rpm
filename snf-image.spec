@@ -1,7 +1,7 @@
 %{!?os_ver: %define os_ver %(Z=`rpm -q --whatprovides /etc/redhat-release`;rpm -q --qf '%{V}' $Z | sed 's/\\.[0-9]*//')}
 
 Name:		snf-image
-Version:	0.15.1
+Version:	0.18.1
 Release:	1%{?dist}
 Summary:	snf-image is a Ganeti OS definition
 Vendor:         Synnefo development team
@@ -9,10 +9,13 @@ Vendor:         Synnefo development team
 License:	GPLv2
 URL:		https://github.com/grnet/snf-image
 Source0:	%{name}-%{version}.tar.gz
-Source1:        %{name}.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	make
+BuildRequires:	kpartx
+BuildRequires:  mbr
+BuildRequires:  python-prctl
+BuildRequires:  scapy
 
 Requires:       kpartx
 Requires:       mbr
@@ -41,7 +44,6 @@ snf-image also supports Image customization via hooks. Hooks allow for:
 %setup -q
 
 %build
-patch -p1 < %{SOURCE1}
 cd snf-image-host
 ./autogen.sh
 %configure \
@@ -73,3 +75,7 @@ ln -s /etc/ganeti/snf-image/variants.list /usr/share/ganeti/os/snf-image/variant
 /etc/xen/scripts/vif-snf-image
 /var/lib/snf-image/helper/
 %config /etc/default/snf-image
+
+%changelog
+* Wed Oct 14 2015 Gert Van Gool <gert@weepee.org> 0.18.1-1
+    Updates to snf-image 0.18.1

@@ -1,0 +1,26 @@
+diff --git a/snf-image-host/kvm-common.sh b/snf-image-host/kvm-common.sh
+index 777a55e..7ff704c 100644
+--- a/snf-image-host/kvm-common.sh
++++ b/snf-image-host/kvm-common.sh
+@@ -33,7 +33,7 @@ launch_helper() {
+ 
+     set +e
+ 
+-    $TIMEOUT -k "$HELPER_HARD_TIMEOUT" "$HELPER_SOFT_TIMEOUT" \
++    $TIMEOUT "$HELPER_SOFT_TIMEOUT" \
+       kvm -runas "$HELPER_USER" -drive file="$HELPER_DIR/image",format=raw,if=virtio,readonly \
+       -drive file="$blockdev",format=raw,if=virtio,cache=none -m "$HELPER_MEMORY" \
+       -boot c -serial stdio -serial "file:$(printf "%q" "$result_file")" \
+diff --git a/snf-image-host/xen-common.sh b/snf-image-host/xen-common.sh
+index 8c35f70..5bb9606 100644
+--- a/snf-image-host/xen-common.sh
++++ b/snf-image-host/xen-common.sh
+@@ -51,7 +51,7 @@ launch_helper() {
+     xenstore-chmod snf-image-helper/${helperid} r0 w${helperid}
+ 
+     filter='udp and dst port 48888 and dst host 10.0.0.255 and src host 10.0.0.1'
+-    $TIMEOUT -k $HELPER_HARD_TIMEOUT $HELPER_SOFT_TIMEOUT \
++    $TIMEOUT $HELPER_SOFT_TIMEOUT \
+       ./helper-monitor.py -i "vif${helperid}.0" -f "$filter" ${MONITOR_FD} &
+     monitor_pid=$!
+ 
